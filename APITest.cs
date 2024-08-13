@@ -68,12 +68,16 @@ public class TestGitHubAPI
     [TestMethod]
     public async Task Test4()
     {
-        var resonse = await Request.GetAsync("objects/"+ await TestDataUtil());
+
+        var payload = new Dictionary<string, object>();
+        payload.Add("name", "book");
+        payload.Add("data", new Dictionary<string, object> { { "author", "Brian Herbert" }, { "title", "Dune" }, {"price", 9.99} });
+        var resonse = await Request.PutAsync("objects/"+ await TestDataUtil(), new() { DataObject = payload });
         JsonElement responseContent = (JsonElement)await resonse.JsonAsync();
 
         //asserting the response.
         Assert.AreEqual(resonse.Status, 200, "The expected response status was not received.");
-        Assert.AreEqual("Dune", responseContent.GetProperty("data").GetProperty("title").ToString(), "The expected response body content was not found.");
+        Assert.AreEqual("Brian Herbert", responseContent.GetProperty("data").GetProperty("author").ToString(), "The expected response body content was not found.");
     }
 
     [TestMethod]
